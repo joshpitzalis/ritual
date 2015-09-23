@@ -1,0 +1,41 @@
+<head>
+  <title>ritual</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.indigo-pink.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+
+<body>
+  <h1>Ritual</h1>
+
+  {{> counter}}
+  {{> tasks}}
+  <!-- {{> addTask}} -->
+
+</body>
+
+<template name="counter">
+    <p>Rituals completed {{counter}}</p>
+</template>
+
+<template name="tasks">
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect ">
+  Button
+</button><br><br>
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect ">
+Button
+</button><br><br>
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect ">
+Button
+</button><br><br>
+
+</template>
+
+<template name ='addTasks'>
+  <br>
+  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+  <i class="material-icons">add</i>
+</button>
+</template>
