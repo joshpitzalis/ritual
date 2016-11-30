@@ -23,13 +23,17 @@ class App extends Component {
   render () {
     return (
       <div>
-        <Points />
-        <ul>
-            {Object
-              .keys(this.state.tasks)
-              .map(key => <Task />)
-            }
-        </ul>
+        <Points count={this.state.tasks} />
+        <ol>
+          {Object
+            .keys(this.state.tasks)
+            .map(key => <Task
+              key={key}
+              details={this.state.tasks[key]
+              }
+               />)
+          }
+        </ol>
         <Add createTask={this.createTask} />
       </div>
     );

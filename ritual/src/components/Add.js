@@ -2,16 +2,21 @@ import React, { Component } from 'react';
 
 class Add extends Component {
 
-  createTask (event) {
+  create (event) {
     event.preventDefault();
-    const task = { task: this.task.value };
+    const task = {
+      name: this.task.value,
+      complete: false
+    };
     this.props.createTask(task);
     this.taskForm.reset();
   }
 
   render () {
     return (
-      <form onSubmit={(e) => this.createTask(e)} ref={(input) => this.taskForm = input}>
+      <form
+        onSubmit={(e) => this.create(e)}
+        ref={(input) => this.taskForm = input}>
         <input
           type='text'
           placeholder='Task Name'

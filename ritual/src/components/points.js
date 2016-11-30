@@ -4,7 +4,9 @@ class Points extends Component {
   render () {
     return (
       <div>
-        <p>Points</p>
+        <p>Total Tasks: {Object
+            .keys(this.props.count).length}</p>
+          <p>Completed Tasks: </p>
       </div>
     );
   }

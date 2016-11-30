@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
 class Task extends Component {
+
   render () {
     return (
-      <li>Task A</li>
+      <li>
+        <input type='checkbox' />
+        {this.props.details.name}</li>
     );
   }
 }
