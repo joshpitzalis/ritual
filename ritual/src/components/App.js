@@ -8,6 +8,7 @@ class App extends Component {
   constructor () {
     super();
     this.createTask = this.createTask.bind(this);
+    this.updateTask = this.updateTask.bind(this);
     this.state = {
       tasks: {}
     };
@@ -20,6 +21,12 @@ class App extends Component {
     this.setState({tasks});
   }
 
+  updateTask (key, updatedTask) {
+    const tasks = {...this.state.tasks};
+    tasks[key] = updatedTask;
+    this.setState({ tasks });
+  }
+
   render () {
     return (
       <div>
@@ -29,9 +36,9 @@ class App extends Component {
             .keys(this.state.tasks)
             .map(key => <Task
               key={key}
-              details={this.state.tasks[key]
-              }
-               />)
+              index={key}
+              details={this.state.tasks[key]}
+              updateTask={this.updateTask} />)
           }
         </ol>
         <Add createTask={this.createTask} />
