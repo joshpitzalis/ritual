@@ -9,15 +9,14 @@ class Task extends Component {
 
   togglChecked () {
     const task = this.props.details;
-    const updatedTask = { ...task, complete: !task.complete };
+    const updatedTask = { ...task, complete: true, disabled: true };
     this.props.updateTask(this.props.index, updatedTask);
   }
 
   render () {
     return (
-      <li onChange={() => this.togglChecked()} style={{
-        textDecoration: this.props.details.complete ? 'line-through' : 'none'}}>
-        <input type='checkbox'/>
+      <li onChange={() => this.togglChecked()}>
+        <input type='checkbox' disabled={this.props.details.disabled}/>
         {this.props.details.name}</li>
     );
   }

@@ -9,7 +9,6 @@ class App extends Component {
     super();
     this.createTask = this.createTask.bind(this);
     this.updateTask = this.updateTask.bind(this);
-    this.updateStreak = this.updateStreak.bind(this);
     this.state = {
       tasks: {},
       streak: 0,
@@ -23,7 +22,8 @@ class App extends Component {
     tasks[`task-${timestamp}`] = task;
     this.setState({
       tasks,
-      completed: false});
+      completed: false,
+      disabled: false});
   }
 
   updateTask (key, updatedTask) {
@@ -43,13 +43,8 @@ class App extends Component {
     });
   }
 
-  updateStreak (updatedStreak) {
-    console.log(updatedStreak)
-
-  }
-
   render () {
-    const {tasks, streak, completed} = this.state;
+    const {tasks, streak, completed, disabled} = this.state;
     return (
       <div>
         <Streak streak={streak} />
