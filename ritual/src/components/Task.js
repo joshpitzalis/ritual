@@ -16,7 +16,10 @@ class Task extends Component {
   render () {
     return (
       <li onChange={() => this.togglChecked()}>
-        <input type='checkbox' disabled={this.props.details.disabled}/>
+        <input
+          type='checkbox'
+          checked={this.props.details.complete} 
+          disabled={this.props.details.disabled} />
         {this.props.details.name}</li>
     );
   }

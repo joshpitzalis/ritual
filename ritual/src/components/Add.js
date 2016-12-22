@@ -6,7 +6,8 @@ class Add extends Component {
     event.preventDefault();
     const task = {
       name: this.task.value,
-      complete: false
+      complete: false,
+      disabled: false
     };
     this.props.createTask(task);
     this.taskForm.reset();
