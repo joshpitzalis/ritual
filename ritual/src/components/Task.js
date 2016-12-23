@@ -18,9 +18,10 @@ class Task extends Component {
       <li onChange={() => this.togglChecked()}>
         <input
           type='checkbox'
-          checked={this.props.details.complete} 
+          checked={this.props.details.complete}
           disabled={this.props.details.disabled} />
-        {this.props.details.name}</li>
+        {this.props.details.name}
+      <button onClick={()=>this.props.removeTask(this.props.index)}>x</button></li>
     );
   }
 }

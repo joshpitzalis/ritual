@@ -13,6 +13,7 @@ class App extends Component {
     this.createTask = this.createTask.bind(this);
     this.updateTask = this.updateTask.bind(this);
     this.updateStreak = this.updateStreak.bind(this);
+    this.removeTask = this.removeTask.bind(this);
     this.state = {
       tasks: {},
       streak: 0,
@@ -50,9 +51,6 @@ class App extends Component {
     later.setInterval(refreshTasks, s);
 
     // # Reset the streak at midnight
-
-
-
     function refreshStreak () {
       // if updatedToday = false then reset streak
       if (self.state.updatedToday === false) {
@@ -66,6 +64,10 @@ class App extends Component {
     }
 
     later.setInterval(refreshStreak, s);
+  }
+
+  componentWillUnmount () {
+    base.removeBinding(this.ref);
   }
 
   createTask (task) {
@@ -98,6 +100,13 @@ class App extends Component {
     this.setState({ tasks }, this.updateStreak);
   }
 
+  removeTask (key){
+    const tasks = {...this.state.tasks};
+    tasks[key] = null;
+    this.setState({tasks});
+    console.log('frog');
+  }
+
   render () {
     const {tasks, streak, completed} = this.state;
     return (
@@ -113,6 +122,7 @@ class App extends Component {
               updateTask={this.updateTask}
               completed={completed}
               count={tasks}
+              removeTask={this.removeTask}
               />)
           }
         </ol>
