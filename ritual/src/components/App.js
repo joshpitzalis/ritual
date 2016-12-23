@@ -4,6 +4,7 @@ import Task from './Task';
 import Add from './Add';
 import 'console-dot-frog';
 import later from 'later';
+import base from '../base';
 
 class App extends Component {
 
@@ -17,6 +18,13 @@ class App extends Component {
       streak: 0,
       updatedToday: false
     };
+  }
+
+  componentWillMount () {
+    this.ref = base.syncState('tasks',{
+      context: this,
+      state: 'tasks'
+    });
   }
 
   componentDidMount () {
