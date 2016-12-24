@@ -14,21 +14,32 @@ class App extends Component {
     this.updateTask = this.updateTask.bind(this);
     this.updateStreak = this.updateStreak.bind(this);
     this.removeTask = this.removeTask.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
+    this.authenticate = this.authenticate.bind(this);
+    this.authHandler = this.authHandler.bind(this);
+    this.logout = this.logout.bind(this);
     this.state = {
       tasks: {},
       streak: 0,
-      updatedToday: false
+      updatedToday: false,
+      uid: null,
+      owner: null
     };
   }
 
   componentWillMount () {
-    this.ref = base.syncState('tasks',{
+    this.ref = base.syncState('tasks', {
       context: this,
       state: 'tasks'
     });
   }
 
   componentDidMount () {
+
+
+
+
+
     // # uncheck all task each day
     // 1.get all current tasks and then update complete to false on all of them
     var self = this;
@@ -64,6 +75,12 @@ class App extends Component {
     }
 
     later.setInterval(refreshStreak, s);
+
+    base.onAuth((user)=>{
+      if(user) {
+        this.authHandler(null, {user});
+      }
+    });
   }
 
   componentWillUnmount () {
@@ -107,10 +124,61 @@ class App extends Component {
     console.log('frog');
   }
 
+  renderLogin () {
+    return(
+      <button onClick={()=> this.authenticate('twitter')}>Log in with Twitter</button>
+    )
+  }
+
+  authenticate (provider) {
+    base.authWithOAuthPopup(provider, this.authHandler)
+  }
+
+  authHandler (err, authData) {
+    console.log(authData)
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    const storeRef = base.database().ref()
+    storeRef.once('value', (snapshot) => {
+      const data = snapshot.val() || {};
+      if (!data.owner) {
+        storeRef.set({
+          owner: authData.user.uid
+        })
+      }
+
+      this.setState({
+        uid: authData.user.uid,
+        owner: data.owner || authData.user.uid
+      });
+    });
+  }
+
+  logout () {
+    base.unauth();
+    this.setState({uid: null});
+  }
+
   render () {
+
+    const logout = <button onClick={this.logout}>Log Out</button>
+
     const {tasks, streak, completed} = this.state;
+
+    // check if anyone is logged in
+    if (!this.state.uid) {
+      return <div>{this.renderLogin()}</div>
+    }
+
+    if (this.state.uid !== this.state.owner) {
+      return (<div><p>Sorry, this is not your ritual.</p>{logout}</div>)
+    }
     return (
       <div>
+        {logout}
         <Streak streak={streak} />
         <ol>
           {Object
