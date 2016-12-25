@@ -28,18 +28,13 @@ class App extends Component {
   }
 
   componentWillMount () {
-    this.ref = base.syncState('tasks', {
+    this.ref = base.syncState(`${this.props.params.ritualId}/tasks`, {
       context: this,
       state: 'tasks'
     });
   }
 
   componentDidMount () {
-
-
-
-
-
     // # uncheck all task each day
     // 1.get all current tasks and then update complete to false on all of them
     var self = this;
@@ -141,7 +136,7 @@ class App extends Component {
       return;
     }
 
-    const storeRef = base.database().ref()
+    const storeRef = base.database().ref(this.props.params.ritualId)
     storeRef.once('value', (snapshot) => {
       const data = snapshot.val() || {};
       if (!data.owner) {
@@ -163,6 +158,8 @@ class App extends Component {
   }
 
   render () {
+
+
 
     const logout = <button onClick={this.logout}>Log Out</button>
 
