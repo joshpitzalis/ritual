@@ -21,7 +21,7 @@ class Task extends Component {
           checked={this.props.details.complete}
           disabled={this.props.details.disabled} />
         {this.props.details.name}
-      <button onClick={()=>this.props.removeTask(this.props.index)}>x</button></li>
+      <button onClick={() => this.props.removeTask(this.props.index)}>x</button></li>
     );
   }
 }

@@ -35,10 +35,17 @@ class App extends Component {
   }
 
   componentDidMount () {
+    base.onAuth((user) => {
+      if(user) {
+        this.authHandler(null, {user});
+      }
+    });
+
     // # uncheck all task each day
     // 1.get all current tasks and then update complete to false on all of them
+
     var self = this;
-    function refreshTasks(){
+    function refreshTasks () {
       self.setState(
         Object.keys(self.state.tasks).map(task => {
           self.state.tasks[task].complete = false;
@@ -71,11 +78,23 @@ class App extends Component {
 
     later.setInterval(refreshStreak, s);
 
-    base.onAuth((user)=>{
-      if(user) {
-        this.authHandler(null, {user});
+    // check to see if streak needs updating
+    var l = later.parse.text('every 5 sec');
+
+    function upStreak () {
+      // i tried to update streak as a call back on setState in updateTask but teh call back wuld not fire for some reason. This is a superhack but it let me move forward.
+      if (self.state.updatedToday === false) {
+        self.updateStreak();
+        console.log('updating...');
       }
-    });
+    }
+
+    later.setInterval(upStreak, l);
+
+  }
+
+  componentWillUpdate (nextProps, nextState){
+    localStorage.setItem(`streak-${this.props.params.ritualId}`, nextState.streak)
   }
 
   componentWillUnmount () {
@@ -90,38 +109,40 @@ class App extends Component {
   }
 
   updateStreak () {
-    // if all tasks are complete increment streak by one, just checcking status of all tasks here
-    // SuperHack! did ths by putting each completed value in an array and then squishing into a string and then checking if it includes teh word true
-    const tally = Object
+    // if all tasks are complete increment streak by one, just checking status of all tasks here
+    // SuperHack! did this by putting each completed value in an array and then squishing into a string and then checking if it includes teh word true
+    var tally = Object
       .keys(this.state.tasks)
       .map(task => this.state.tasks[task].complete).toString();
-    if (!tally.includes('false')) {
+    console.log(tally)
+    if (!tally.includes('false') && Object.keys(this.state.tasks).length >= 1) {
       let streak = {...this.state.streak};
       streak = this.state.streak + 1;
-      this.setState({ streak });
+      this.setState({ streak, updatedToday: true });
+        // change state to show streak has been updated so that it knows wheher to reset at midnight or not
+
     }
-    // change state to show streak has been updated so that it knows wheher to reset at midnight or not
-    this.setState({
-      updatedToday: true
-    });
+
+
   }
 
   updateTask (key, updatedTask) {
+    var self = this;
     const tasks = {...this.state.tasks};
     tasks[key] = updatedTask;
-    this.setState({ tasks }, this.updateStreak);
+    this.setState({ tasks });
+
   }
 
   removeTask (key){
     const tasks = {...this.state.tasks};
     tasks[key] = null;
     this.setState({tasks});
-    console.log('frog');
   }
 
   renderLogin () {
     return(
-      <button onClick={()=> this.authenticate('twitter')}>Log in with Twitter</button>
+      <button onClick={() => this.authenticate('twitter')}>Log in with Twitter</button>
     )
   }
 
@@ -136,13 +157,12 @@ class App extends Component {
       return;
     }
 
-    const storeRef = base.database().ref(this.props.params.ritualId)
-    storeRef.once('value', (snapshot) => {
+    base.database().ref(this.props.params.ritualId).once('value', (snapshot) => {
       const data = snapshot.val() || {};
       if (!data.owner) {
-        storeRef.set({
+        base.database().ref(this.props.params.ritualId).set({
           owner: authData.user.uid
-        })
+        });
       }
 
       this.setState({
@@ -158,9 +178,6 @@ class App extends Component {
   }
 
   render () {
-
-
-
     const logout = <button onClick={this.logout}>Log Out</button>
 
     const {tasks, streak, completed} = this.state;
@@ -192,6 +209,7 @@ class App extends Component {
           }
         </ol>
         <Add createTask={this.createTask} />
+        <button onClick={() => this.updateStreak()}>streak</button>
       </div>
     );
   }

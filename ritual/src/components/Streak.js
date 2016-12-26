@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-const Streak = ({ streak }) => <div>
-                                 <p>
-                                   Streak:
-                                   {streak}
-                                 </p>
-                               </div>;
+class Streak extends Component {
+
+  render () {
+    return (
+      <div>
+        <p>
+          Streak:
+          {this.props.streak}
+        </p>
+      </div>
+    );
+  }
+}
+
 export default Streak;
