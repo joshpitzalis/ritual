@@ -32,6 +32,13 @@ class App extends Component {
       context: this,
       state: 'tasks'
     });
+
+    const localStorageRef = localStorage.getItem(`streak-${this.props.params.ritualId}`);
+    if (localStorageRef) {
+      this.setState({
+        order: localStorageRef
+      });
+    }
   }
 
   componentDidMount () {
@@ -79,7 +86,7 @@ class App extends Component {
     later.setInterval(refreshStreak, s);
 
     // check to see if streak needs updating
-    var l = later.parse.text('every 5 sec');
+    var l = later.parse.text('every 1 sec');
 
     function upStreak () {
       // i tried to update streak as a call back on setState in updateTask but teh call back wuld not fire for some reason. This is a superhack but it let me move forward.
@@ -120,10 +127,7 @@ class App extends Component {
       streak = this.state.streak + 1;
       this.setState({ streak, updatedToday: true });
         // change state to show streak has been updated so that it knows wheher to reset at midnight or not
-
     }
-
-
   }
 
   updateTask (key, updatedTask) {
