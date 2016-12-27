@@ -4,10 +4,9 @@ class Streak extends Component {
 
   render () {
     return (
-      <div>
+      <div className='mt2 mb0 f6 fw4 ttu tracked'>
         <p>
-          Streak:
-          {this.props.streak}
+          {this.props.streak} Rituals Completed
         </p>
       </div>
     );

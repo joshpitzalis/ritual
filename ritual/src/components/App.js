@@ -6,6 +6,8 @@ import 'console-dot-frog';
 import later from 'later';
 import base from '../base';
 import moment from 'moment';
+import CSSTransitionGroup from 'react-addons-css-transition-group';
+import 'tachyons';
 
 class App extends Component {
 
@@ -131,7 +133,12 @@ class App extends Component {
 
   renderLogin () {
     return(
-      <button onClick={() => this.authenticate('twitter')}>Log in with Twitter</button>
+      <div className={'pa4 black-80'}>
+      <button onClick={() => this.authenticate('twitter')} className={'b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib'}>Log in with Twitter</button>
+        <small className="f6 lh-copy black-60 db mb2">
+      Login with Twitter to create your Ritual.
+    </small>
+    </div>
     )
   }
 
@@ -167,7 +174,7 @@ class App extends Component {
   }
 
   render () {
-    const logout = <button onClick={this.logout}>Log Out</button>
+    const logout = <a onClick={this.logout} className="f6 f5-l bg-animate black-80 pointer dim dib pa3 ph4-l">Log Out</a>
 
     const {tasks, streak, completed} = this.state;
 
@@ -177,13 +184,22 @@ class App extends Component {
     }
 
     if (this.state.uid !== this.state.owner) {
-      return (<div><p>Sorry, this is not your ritual.</p>{logout}</div>)
+      return (<div><small className="f6 lh-copy black-60 db mb2">Sorry, This Is Not your Ritual.
+  </small>{logout}</div>)
     }
     return (
+
       <div>
-        {logout}
-        <Streak streak={streak} />
-        <ol>
+
+        <header className="black-80 tc pv4 avenir">
+          <h1 className="mt2 mb0 baskerville i fw1 f1">Ritual</h1>
+          <Streak streak={streak} />
+          <nav className="bt bb tc mw7 center mt4">
+            {logout}
+          </nav>
+        </header>
+
+        <CSSTransitionGroup className='tasks' component='ol' transitionName='tasks' transitionEnterTimeout={500} transitionLeaveTimeout={500} className="list pl0 mt0 measure center">
           {Object
             .keys(tasks)
             .map(key => <Task
@@ -196,7 +212,7 @@ class App extends Component {
               removeTask={this.removeTask}
               />)
           }
-        </ol>
+        </CSSTransitionGroup>
         <Add createTask={this.createTask} />
       </div>
     );

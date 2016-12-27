@@ -17,12 +17,13 @@ class Add extends Component {
     return (
       <form
         onSubmit={(e) => this.create(e)}
-        ref={(input) => this.taskForm = input}>
+        ref={(input) => this.taskForm = input}
+        className='measure center' >
         <input
           type='text'
-          placeholder='Task Name'
-          ref={(input) => this.task = input} />
-        <button type='submit'>Add Task</button>
+          placeholder='Add New Tasks To Your Ritual Here.'
+          ref={(input) => this.task = input}
+          className=' tc pa2 input-reset bn bg-transparent hover-bg-black hover-white w-100' />
       </form>
     );
   }
