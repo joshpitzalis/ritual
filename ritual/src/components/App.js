@@ -5,6 +5,7 @@ import Add from './Add';
 import 'console-dot-frog';
 import later from 'later';
 import base from '../base';
+import moment from 'moment';
 
 class App extends Component {
 
@@ -21,7 +22,7 @@ class App extends Component {
     this.state = {
       tasks: {},
       streak: 0,
-      updatedToday: false,
+      updatedToday: null,
       uid: null,
       owner: null
     };
@@ -36,9 +37,30 @@ class App extends Component {
     const localStorageRef = localStorage.getItem(`streak-${this.props.params.ritualId}`);
     if (localStorageRef) {
       this.setState({
-        order: localStorageRef
+        streak: localStorageRef
       });
     }
+
+    // check if streak was updated yesterday, if not set streak to zero
+    if (this.state.updatedToday + 1 < moment().dayOfYear()) {
+      let streak = {...this.state.streak};
+      const reset = 0;
+      streak = reset;
+      this.setState(
+        {streak}
+      );
+    }
+
+    // # uncheck all task each day
+    if (this.state.updatedToday < moment().dayOfYear()) {
+      this.setState(
+        Object.keys(this.state.tasks).map(task => {
+          this.state.tasks[task].complete = false;
+          this.state.tasks[task].disabled = false;
+        })
+      );
+    }
+
   }
 
   componentDidMount () {
@@ -48,51 +70,15 @@ class App extends Component {
       }
     });
 
-    // # uncheck all task each day
-    // 1.get all current tasks and then update complete to false on all of them
-
-    var self = this;
-    function refreshTasks () {
-      self.setState(
-        Object.keys(self.state.tasks).map(task => {
-          self.state.tasks[task].complete = false;
-          self.state.tasks[task].disabled = false;
-        })
-      );
-    }
-
-    // 3. schedule the above with later.js,
-    var s = later.parse.text('at 00:00 am');
-
-    // var s = later.parse.text('every 5 sec');
-    // use this for testing
-
-    // 4.and set to local time
-    later.setInterval(refreshTasks, s);
-
-    // # Reset the streak at midnight
-    function refreshStreak () {
-      // if updatedToday = false then reset streak
-      if (self.state.updatedToday === false) {
-        let streak = {...self.state.streak};
-        const reset = 0;
-        streak = reset;
-        self.setState(
-          {streak}
-        );
-      }
-    }
-
-    later.setInterval(refreshStreak, s);
 
     // check to see if streak needs updating
     var l = later.parse.text('every 1 sec');
-
+    const self = this;
     function upStreak () {
       // i tried to update streak as a call back on setState in updateTask but teh call back wuld not fire for some reason. This is a superhack but it let me move forward.
-      if (self.state.updatedToday === false) {
+
+      if (self.state.updatedToday !== moment().dayOfYear() ) {
         self.updateStreak();
-        console.log('updating...');
       }
     }
 
@@ -101,7 +87,7 @@ class App extends Component {
   }
 
   componentWillUpdate (nextProps, nextState){
-    localStorage.setItem(`streak-${this.props.params.ritualId}`, nextState.streak)
+    localStorage.setItem(`streak-${this.props.params.ritualId}`, nextState.streak);
   }
 
   componentWillUnmount () {
@@ -121,17 +107,16 @@ class App extends Component {
     var tally = Object
       .keys(this.state.tasks)
       .map(task => this.state.tasks[task].complete).toString();
-    console.log(tally)
+    // console.log(tally)
     if (!tally.includes('false') && Object.keys(this.state.tasks).length >= 1) {
       let streak = {...this.state.streak};
       streak = this.state.streak + 1;
-      this.setState({ streak, updatedToday: true });
+      this.setState({ streak, updatedToday: moment().dayOfYear() });
         // change state to show streak has been updated so that it knows wheher to reset at midnight or not
     }
   }
 
   updateTask (key, updatedTask) {
-    var self = this;
     const tasks = {...this.state.tasks};
     tasks[key] = updatedTask;
     this.setState({ tasks });
@@ -155,7 +140,7 @@ class App extends Component {
   }
 
   authHandler (err, authData) {
-    console.log(authData)
+    // console.log(authData)
     if (err) {
       console.error(err);
       return;
@@ -213,7 +198,6 @@ class App extends Component {
           }
         </ol>
         <Add createTask={this.createTask} />
-        <button onClick={() => this.updateStreak()}>streak</button>
       </div>
     );
   }
