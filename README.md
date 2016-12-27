@@ -9,13 +9,19 @@
 - [x] Streak either increments or resets to zero each day.
 - [x] Persist state to Firebase.
 - [x] Be able to delete tasks.
-- [ ] User accounts and authentication.
-- [ ] Host on Now.
+- [x] User accounts and authentication.
+- [x] Host on Now.
 
 ## Bugs
 
 - [ ] Cannot submit an empty task.
-- [ ] Adding a new task on the same day lets you complete it and bump your streak up. Possible solution, when streak increment, remove Add component. ( try using that conditional function in jsx thing you learnt)
+- [ ] Cannot submit an ritual name on signup.
+- [ ] 1 ritual completed
 
 ## Future
 - [ ] be able to update and Reorganise Tasks.
+- [ ] Proptypes
+- [x] Styling
+- [ ] Deity Animations
+- [ ] tests (if it were tomorrow, daylight savings in some localities)
+- [ ] email login
