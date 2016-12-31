@@ -38,29 +38,40 @@ class App extends Component {
       state: 'tasks'
     });
 
-    this.updateChecker = base.bindToState(`${this.props.params.ritualId}/lastUpdated`, {
+    this.streakSyncer = base.syncState(`${this.props.params.ritualId}/streak`, {
+      context: this,
+      state: 'streak'
+    });
+
+    this.streakSyncer = base.syncState(`${this.props.params.ritualId}/lastUpdated`, {
       context: this,
       state: 'updatedToday'
     });
 
-    // get streak from local storage if there is one
-    const localStorageRef = localStorage.getItem(`streak-${this.props.params.ritualId}`);
-    if (localStorageRef) {
-      this.setState({
-        streak: localStorageRef
-      });
-      // console.log(`found a streak, its ${localStorageRef}`);
-      // console.log(this.state.streak);
-    }
-    // check if streak was updated yesterday, if not set streak to zero
-    if (this.state.updatedToday + 1 < new Date().getDate()) {
-      let streak = {...this.state.streak};
-      const reset = 0;
-      streak = reset;
-      this.setState(
-        {streak}
-      );
-    }
+    base.fetch(`${this.props.params.ritualId}/attempted`, {
+      context: this,
+      then(data){
+        if (data !== new Date().getDate()) {
+          this.resetTasks();
+        }
+      }
+    });
+
+    base.fetch(`${this.props.params.ritualId}/lastUpdated`, {
+      context: this,
+      then(data){
+        // check if streak was updated yesterday, if not set streak to zero
+        if (data + 1 !== new Date().getDate() && data !== new Date().getDate()) {
+          let streak = {...this.state.streak};
+          const reset = 0;
+          streak = reset;
+          this.setState(
+            {streak}
+          );
+        }
+      }
+    });
+
   }
 
   componentDidMount () {
@@ -82,29 +93,19 @@ class App extends Component {
     }
 
     later.setInterval(upStreak, l);
-
-    setTimeout(function(){
-      if (self.state.updatedToday !== new Date().getDate() ) {
-      self.resetTasks();
-      }
-    }, 3000);
-
   }
 
-  componentWillUpdate (nextProps, nextState){
-    localStorage.setItem(`streak-${this.props.params.ritualId}`, nextState.streak);
-    // console.log({nextProps, nextState});
-  }
+  componentWillUpdate() {
 
-  componentDidUpdate () {
-    base.post(`${this.props.params.ritualId}/lastUpdated`, {
-      data: this.state.updatedToday
+    base.post(`${this.props.params.ritualId}/attempted`, {
+      data: new Date().getDate()
     });
   }
 
   componentWillUnmount () {
     base.removeBinding(this.ref);
     base.removeBinding(this.updateChecker);
+    base.removeBinding(this.streakSyncer);
   }
 
   resetTasks () {
@@ -196,6 +197,7 @@ class App extends Component {
   }
 
   render () {
+
     const logout = <a onClick={this.logout} className="f6 f5-l bg-animate black-80 pointer dim dib pa3 ph4-l">Log Out</a>
 
     const {tasks, streak, completed} = this.state;
