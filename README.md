@@ -12,16 +12,11 @@
 - [x] User accounts and authentication.
 - [x] Host on Now.
 
-## Bugs
-
-- [ ] Cannot submit an empty task.
-- [ ] Cannot submit an ritual name on signup.
-- [ ] 1 ritual completed
-
 ## Future
 - [ ] be able to update and Reorganise Tasks.
-- [ ] Proptypes
-- [x] Styling
 - [ ] Deity Animations
-- [ ] tests (if it were tomorrow, daylight savings in some localities)
+- [ ] tests
 - [ ] email login
+- [ ] login to an account with multiple rituals
+- [ ] keep a history of what happened on what days
+- [ ] Be able to export that history
