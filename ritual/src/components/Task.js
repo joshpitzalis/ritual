@@ -22,10 +22,10 @@ class Task extends Component {
           disabled={this.props.details.disabled}
           className="w2 h2 w3-ns h3-ns br-100" />
         <div className="pl3 flex-auto ttu">
-          <span class="f6 db black-70">{this.props.details.name}</span>
+          <span className="f6 db black-70">{this.props.details.name}</span>
         </div>
 
-      <button onClick={() => this.props.removeTask(this.props.index)} className="b ph3 pv1 input-reset bn b--black bg-transparent grow pointer f6 dib"><span class="f6 db black-70">x</span></button></li>
+      <button onClick={() => this.props.removeTask(this.props.index)} className="b ph3 pv1 input-reset bn b--black bg-transparent grow pointer f6 dib"><span className="f6 db black-70">x</span></button></li>
     );
   }
 }

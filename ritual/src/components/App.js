@@ -5,7 +5,6 @@ import Add from './Add';
 import 'console-dot-frog';
 import later from 'later';
 import base from '../base';
-import moment from 'moment';
 import CSSTransitionGroup from 'react-addons-css-transition-group';
 import 'tachyons';
 
@@ -21,6 +20,7 @@ class App extends Component {
     this.authenticate = this.authenticate.bind(this);
     this.authHandler = this.authHandler.bind(this);
     this.logout = this.logout.bind(this);
+    this.resetTasks = this.resetTasks.bind(this);
     this.state = {
       tasks: {},
       streak: 0,
@@ -31,20 +31,29 @@ class App extends Component {
   }
 
   componentWillMount () {
+
+    // sync tasks with those stored in firbase
     this.ref = base.syncState(`${this.props.params.ritualId}/tasks`, {
       context: this,
       state: 'tasks'
     });
 
+    this.updateChecker = base.bindToState(`${this.props.params.ritualId}/lastUpdated`, {
+      context: this,
+      state: 'updatedToday'
+    });
+
+    // get streak from local storage if there is one
     const localStorageRef = localStorage.getItem(`streak-${this.props.params.ritualId}`);
     if (localStorageRef) {
       this.setState({
         streak: localStorageRef
       });
+      // console.log(`found a streak, its ${localStorageRef}`);
+      // console.log(this.state.streak);
     }
-
     // check if streak was updated yesterday, if not set streak to zero
-    if (this.state.updatedToday + 1 < moment().dayOfYear()) {
+    if (this.state.updatedToday + 1 < new Date().getDate()) {
       let streak = {...this.state.streak};
       const reset = 0;
       streak = reset;
@@ -52,17 +61,6 @@ class App extends Component {
         {streak}
       );
     }
-
-    // # uncheck all task each day
-    if (this.state.updatedToday < moment().dayOfYear()) {
-      this.setState(
-        Object.keys(this.state.tasks).map(task => {
-          this.state.tasks[task].complete = false;
-          this.state.tasks[task].disabled = false;
-        })
-      );
-    }
-
   }
 
   componentDidMount () {
@@ -72,28 +70,52 @@ class App extends Component {
       }
     });
 
-
     // check to see if streak needs updating
     var l = later.parse.text('every 1 sec');
     const self = this;
     function upStreak () {
       // i tried to update streak as a call back on setState in updateTask but teh call back wuld not fire for some reason. This is a superhack but it let me move forward.
 
-      if (self.state.updatedToday !== moment().dayOfYear() ) {
+      if (self.state.updatedToday !== new Date().getDate() ) {
         self.updateStreak();
       }
     }
 
     later.setInterval(upStreak, l);
 
+    setTimeout(function(){
+      if (self.state.updatedToday !== new Date().getDate() ) {
+      self.resetTasks();
+      }
+    }, 3000);
+
   }
 
   componentWillUpdate (nextProps, nextState){
     localStorage.setItem(`streak-${this.props.params.ritualId}`, nextState.streak);
+    // console.log({nextProps, nextState});
+  }
+
+  componentDidUpdate () {
+    base.post(`${this.props.params.ritualId}/lastUpdated`, {
+      data: this.state.updatedToday
+    });
   }
 
   componentWillUnmount () {
     base.removeBinding(this.ref);
+    base.removeBinding(this.updateChecker);
+  }
+
+  resetTasks () {
+    let freshTasks = {...this.state.tasks}
+    for (var tasks in freshTasks){
+      if (freshTasks.hasOwnProperty(tasks)) {
+        freshTasks[tasks].complete = false;
+        freshTasks[tasks].disabled = false;
+      }
+    }
+    this.setState({tasks: freshTasks});
   }
 
   createTask (task) {
@@ -113,8 +135,8 @@ class App extends Component {
     if (!tally.includes('false') && Object.keys(this.state.tasks).length >= 1) {
       let streak = {...this.state.streak};
       streak = this.state.streak + 1;
-      this.setState({ streak, updatedToday: moment().dayOfYear() });
-        // change state to show streak has been updated so that it knows wheher to reset at midnight or not
+      this.setState({ streak, updatedToday: new Date().getDate() });
+        // change state to show streak has been updated so that it knows whether to reset at midnight or not
     }
   }
 
@@ -190,7 +212,6 @@ class App extends Component {
     return (
 
       <div>
-
         <header className="black-80 tc pv4 avenir">
           <h1 className="mt2 mb0 baskerville i fw1 f1">Ritual</h1>
           <Streak streak={streak} />
@@ -198,8 +219,7 @@ class App extends Component {
             {logout}
           </nav>
         </header>
-
-        <CSSTransitionGroup className='tasks' component='ol' transitionName='tasks' transitionEnterTimeout={500} transitionLeaveTimeout={500} className="list pl0 mt0 measure center">
+        <CSSTransitionGroup component='ol' transitionName='tasks' transitionEnterTimeout={500} transitionLeaveTimeout={500} className='list pl0 mt0 measure center tasks'>
           {Object
             .keys(tasks)
             .map(key => <Task
@@ -214,6 +234,10 @@ class App extends Component {
           }
         </CSSTransitionGroup>
         <Add createTask={this.createTask} />
+
+        <footer className="pv4 ph3 ph5-m ph6-l mid-gray bt mw7 center avenir">
+          <small className="f6 db tc">If you find a bug <a href='https://twitter.com/joshpitzalis'>let me know.</a></small>
+        </footer>
       </div>
     );
   }

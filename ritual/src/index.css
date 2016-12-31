@@ -11,6 +11,7 @@ body {
   transform: translateX(-120%);
   max-height: 0;
   padding: 0 !important;
+  border-bottom: none;
 }
 
 .tasks-enter-active {
@@ -22,6 +23,7 @@ body {
 .tasks-leave {
   transition: all 0.5s;
   transform: translateX(0%);
+  border-bottom: none;
 }
 
 .tasks-leave-active {

@@ -18,12 +18,12 @@ class Add extends Component {
       <form
         onSubmit={(e) => this.create(e)}
         ref={(input) => this.taskForm = input}
-        className='measure center' >
+        className='measure center pv4' >
         <input
           type='text'
-          placeholder='Add New Tasks To Your Ritual Here.'
+          placeholder='+ Add Tasks'
           ref={(input) => this.task = input}
-          className=' tc pa2 input-reset bn bg-transparent hover-bg-black hover-white w-100' />
+          className=' tc pa2 input-reset bn bg-transparent hover-bg-black hover-white w-100 avenir ttu' />
       </form>
     );
   }

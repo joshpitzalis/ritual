@@ -6,7 +6,7 @@ class Streak extends Component {
     return (
       <div className='mt2 mb0 f6 fw4 ttu tracked'>
         <p>
-          {this.props.streak} Rituals Completed
+          {this.props.streak} Rituals in a Row
         </p>
       </div>
     );
