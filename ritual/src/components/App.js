@@ -7,6 +7,7 @@ import later from 'later';
 import base from '../base';
 import CSSTransitionGroup from 'react-addons-css-transition-group';
 import 'tachyons';
+import Deity from './Deity';
 
 class App extends Component {
 
@@ -96,7 +97,6 @@ class App extends Component {
   }
 
   componentWillUpdate() {
-
     base.post(`${this.props.params.ritualId}/attempted`, {
       data: new Date().getDate()
     });
@@ -215,7 +215,7 @@ class App extends Component {
 
       <div>
         <header className="black-80 tc pv4 avenir">
-          <h1 className="mt2 mb0 baskerville i fw1 f1">Ritual</h1>
+          <Deity streak={streak} />
           <Streak streak={streak} />
           <nav className="bt bb tc mw7 center mt4">
             {logout}
