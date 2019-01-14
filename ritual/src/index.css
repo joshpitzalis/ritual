@@ -1,5 +1,5 @@
 body {
-  background-color: #F1F1EF;
+  background-color: #f1f1ef;
 }
 
 * + * {
@@ -7,8 +7,11 @@ body {
 }
 
 .tasks-enter {
+  -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  transform: translateX(-120%);
+  -webkit-transform: translateX(-120%);
+      -ms-transform: translateX(-120%);
+          transform: translateX(-120%);
   max-height: 0;
   padding: 0 !important;
   border-bottom: none;
@@ -17,17 +20,24 @@ body {
 .tasks-enter-active {
   max-height: 60px;
   padding: 2rem 0 !important;
-  transform: translateX(0);
+  -webkit-transform: translateX(0);
+      -ms-transform: translateX(0);
+          transform: translateX(0);
 }
 
 .tasks-leave {
+  -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  transform: translateX(0%);
+  -webkit-transform: translateX(0%);
+      -ms-transform: translateX(0%);
+          transform: translateX(0%);
   border-bottom: none;
 }
 
 .tasks-leave-active {
   max-height: 0px;
   padding: 0rem;
-  transform: translateX(-120%);
+  -webkit-transform: translateX(-120%);
+      -ms-transform: translateX(-120%);
+          transform: translateX(-120%);
 }

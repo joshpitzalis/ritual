@@ -7,7 +7,8 @@ class RitualPicker extends Component {
     // first grab text from input
     const ritualId = this.ritualInput.value;
   // then transition to that ritual
-    this.context.router.transitionTo(`/ritual/${ritualId}`);
+  this.props.history.push(`/ritual/${ritualId}`)
+    // this.context.router.transitionTo(`/ritual/${ritualId}`);
   }
   render () {
     return (
@@ -28,8 +29,8 @@ class RitualPicker extends Component {
 }
 
 // add context to be able to use the router to transition from page to page
-RitualPicker.contextTypes = {
-  router: React.PropTypes.Object
-};
+// RitualPicker.contextTypes = {
+//   router: React.PropTypes.Object
+// };
 
 export default RitualPicker;

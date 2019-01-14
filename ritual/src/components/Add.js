@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
+import { db } from '../utils/firebase';
 
 class Add extends Component {
-
   create (event) {
     event.preventDefault();
+    
     const task = {
       name: this.task.value,
       complete: false,
       disabled: false
     };
-    this.props.createTask(task);
+
+    db.ref(`${this.props.ritualId}/tasks/task-${Date.now()}`)
+    .set(task)
     this.taskForm.reset();
   }
 

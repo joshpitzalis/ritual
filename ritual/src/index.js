@@ -1,25 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import App from './features/Auth';
 import './index.css';
 import 'normalize.css';
-import RitualPicker from './components/RitualPicker';
-import NotFound from './components/NotFound';
-import { BrowserRouter, Match, Miss } from 'react-router';
 
-const Root = () => {
-  return (
-    <BrowserRouter>
-      <div>
-        <Match exactly pattern='/' component={RitualPicker} />
-        <Match pattern='/ritual/:ritualId' component={App} />
-        <Miss component={NotFound} />
-      </div>
-    </BrowserRouter>
-  );
-};
 
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root')
-);
+// import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+// const Root = () => {
+//   return (
+//     <BrowserRouter>
+//       <div>
+//         <Switch>
+//           <Route exact path="/" component={RitualPicker} />
+//           <Route path="/ritual/:ritualId" 
+//           component={App}/>
+//           <Route component={NotFound} />
+//         </Switch>
+//       </div>
+//     </BrowserRouter>
+//   );
+// };
+
+
+
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+
+
+
